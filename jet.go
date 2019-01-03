@@ -59,7 +59,7 @@ func main() {
 	 */
 	if currentEnvironment == "staging" {
 		// Generate a backup name
-		backupName := GenerateBackupString()
+		backupName = GenerateBackupString()
 		logger.Info("Generated Backup Name",
 			zap.String("name", backupName),
 		)
@@ -96,6 +96,8 @@ func main() {
 	 * Production Server
 	 */
 	if currentEnvironment == "production" {
+		backupName = os.Args[1]
+
 		// Back up persistent tables
 		err = DumpPersistentTables(config)
 		if err != nil {

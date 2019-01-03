@@ -59,3 +59,27 @@ func FlushWordPressCache(config Config) error {
 
 	return nil
 }
+
+// CallProductionScript calls the production script and passes in the backup name
+func CallProductionScript(config Config, backupName string) error {
+	cmd := exec.Command(config.BinaryPaths.SSH,
+		fmt.Sprintf("%s@%s",
+			config.Environments.Production.User,
+			config.Environments.Production.Host,
+		),
+		fmt.Sprintf("cd %s && /usr/local/bin/jet --environment=production %s",
+			config.Environments.Production.RootDirectory,
+			backupName,
+		),
+	)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	err := cmd.Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
